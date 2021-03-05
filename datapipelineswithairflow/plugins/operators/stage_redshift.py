@@ -42,8 +42,8 @@ class StageToRedshiftOperator(BaseOperator):
         credentials = aws_hook.get_credentials()
         redshift = PostgresHook(postgres_conn_id = self.conn_id)
         
-#        self.log.info('Deleting staging table')
-#        redshift.run("DELETE FROM {}".format(self.table))
+        #self.log.info('Deleting staging table')
+        #redshift.run("DELETE FROM {}".format(self.table))
         
         self.log.info("Copying from S3 to redshift")
         rend_key = self.s3_key.format(**context)
@@ -58,6 +58,7 @@ class StageToRedshiftOperator(BaseOperator):
             self.jsonpath
         )
         redshift.run(final_copy_sql)
+        self.log.info("Done loading table")
 
         
        

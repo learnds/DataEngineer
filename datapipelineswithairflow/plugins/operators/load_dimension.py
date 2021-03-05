@@ -4,6 +4,9 @@ from airflow.utils.decorators import apply_defaults
 
 
 class LoadDimensionOperator(BaseOperator):
+    '''
+    Dag Operator for loading dimension tables into Redshift derived from BasedOperator
+    '''
 
     ui_color = '#80BD9E'
 
@@ -31,4 +34,4 @@ class LoadDimensionOperator(BaseOperator):
                       
         load_dim_sql = self.table_query
         redshift.run(load_dim_sql)
-        self.log.info("Done loading dim table ")
+        self.log.info(f"Dimension table {self.table} loaded successfully ")

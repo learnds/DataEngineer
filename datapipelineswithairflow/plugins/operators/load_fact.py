@@ -3,6 +3,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadFactOperator(BaseOperator):
+    '''
+    Dag Operator for loading fact table into Redshift derived from BasedOperator
+    '''
 
     ui_color = '#F98866'
 
@@ -20,7 +23,7 @@ class LoadFactOperator(BaseOperator):
         self.log.info('Loading fact table songplays')
         redshift = PostgresHook(postgres_conn_id = self.conn_id)
         
-#        self.log.info('Deleting staging table')
+#        self.log.info('Deleting fact table')
 #        redshift.run("DELETE FROM {}".format(self.table))
     
         load_fact_sql = self.table_query

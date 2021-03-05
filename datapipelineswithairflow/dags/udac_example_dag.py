@@ -8,7 +8,9 @@ from helpers import SqlQueries
 
 # AWS_KEY = os.environ.get('AWS_KEY')
 # AWS_SECRET = os.environ.get('AWS_SECRET')
-
+'''
+Main program defining the Dag
+'''
 default_args = {
     'owner': 'udacity',
     'start_date': datetime(2018,11,1),

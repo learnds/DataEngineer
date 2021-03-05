@@ -4,6 +4,9 @@ from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.aws_hook import AwsHook
 
 class StageToRedshiftOperator(BaseOperator):
+    '''
+    Dag operator for loading staging tables into Redshift derived from BasedOperator
+    '''
     ui_color = '#358140'
     template_fields = ("s3_key",)
     copy_sql = """
@@ -37,6 +40,7 @@ class StageToRedshiftOperator(BaseOperator):
         
 
     def execute(self, context):
+
         self.log.info('Loading staging table')
         aws_hook = AwsHook(self.aws_credentials_id)
         credentials = aws_hook.get_credentials()
@@ -58,7 +62,7 @@ class StageToRedshiftOperator(BaseOperator):
             self.jsonpath
         )
         redshift.run(final_copy_sql)
-        self.log.info("Done loading table")
+        self.log.info(f"Staging table {self.table} loaded successfully")
 
         
        

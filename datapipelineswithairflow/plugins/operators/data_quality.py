@@ -3,7 +3,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
-
+    '''
+    Dag Operator for running data quality queries and comparing the output to expected output
+    '''
     ui_color = '#89DA59'
 
     @apply_defaults

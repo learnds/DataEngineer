@@ -40,7 +40,8 @@ stage_i94vistors = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     s3_bucket="ctsprojbucket/",
     s3_key="i94visitorstest/",
-    fileformat="parquet"
+    fileformat="parquet",
+    truncate_flag='Y' 
 )
 
 
@@ -52,7 +53,8 @@ load_airports_dim = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     s3_bucket="ctsprojbucket/",
     s3_key="airports/",
-    fileformat="parquet"
+    fileformat="parquet",
+    truncate_flag='Y'
 )
 
 load_states_dim = StageToRedshiftOperator(
@@ -63,7 +65,8 @@ load_states_dim = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     s3_bucket="ctsprojbucket/",
     s3_key="states",
-    fileformat="parquet"
+    fileformat="parquet",
+    truncate_flag='Y'
 )
 load_countries_dim = StageToRedshiftOperator(
     task_id='load_countries_dim',
@@ -73,7 +76,8 @@ load_countries_dim = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     s3_bucket="ctsprojbucket/",
     s3_key="countries",
-    fileformat="parquet"
+    fileformat="parquet",
+    truncate_flag='Y'
 )
 
 Load_visitorsi94_fact = LoadFactOperator(

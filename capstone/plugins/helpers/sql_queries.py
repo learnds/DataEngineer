@@ -1,6 +1,5 @@
 class SqlQueries:
-
- visitors_fact_insert = ("""
+    visitors_fact_insert = ("""
       Insert into public.i94visitors_fact
         SELECT
                 md5(cast(cicid as varchar)||cast(arrivaldate as varchar)) visitorid,
@@ -39,4 +38,5 @@ class SqlQueries:
                 ) a
         order by arrivaldate
     """)
+
 

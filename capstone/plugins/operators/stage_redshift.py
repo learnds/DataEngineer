@@ -25,6 +25,7 @@ class StageToRedshiftOperator(BaseOperator):
                  s3_bucket = "",
                  s3_key = "",
                  fileformat = "",
+                 truncate_flag="",
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
@@ -34,6 +35,8 @@ class StageToRedshiftOperator(BaseOperator):
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
         self.fileformat = fileformat
+        self.truncate_flag = truncate_flag
+        
         
 
     def execute(self, context):
@@ -43,8 +46,9 @@ class StageToRedshiftOperator(BaseOperator):
         credentials = aws_hook.get_credentials()
         redshift = PostgresHook(postgres_conn_id = self.conn_id)
         
-        #self.log.info('Deleting staging table')
-        #redshift.run("DELETE FROM {}".format(self.table))
+        if self.truncate_flag == "Y":
+           self.log.info("Truncating table {}".format(self.table))
+           redshift.run("truncate table {}".format(self.table))
         
         self.log.info("Copying from S3 to redshift")
         rend_key = self.s3_key.format(**context)

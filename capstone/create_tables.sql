@@ -8,8 +8,8 @@ CREATE TABLE public.countries_dim (
 CREATE TABLE public.states_dim (
 	stateid varchar(10) NOT NULL,
 	statename varchar(256),
-	totalpopulation numeric(12,0),
-    foreignborn numeric(12,0),
+	totalpopulation float8,
+    foreignborn float8,
 	CONSTRAINT states_pkey PRIMARY KEY (stateid)
 );
 
@@ -20,6 +20,7 @@ CREATE TABLE public."dates_dim" (
 	week int4,
 	"month" varchar(256),
 	"year" int4,
+	weekday varchar(256),
 	CONSTRAINT time_pkey PRIMARY KEY ("date")
 );
 
@@ -69,9 +70,9 @@ CREATE TABLE public.i94visitors_fact (
     departuredate date  null,
     visitorage float  null,
     visatype varchar(10) null,
-    gender varchar(10) null,
-    visaissuedloc varchar(10) null,
-    airline varchar(10),
+	visaissuedloc varchar(10) null,
+	gender varchar(10) null,
+	airline varchar(10),
     fltno varchar(10),
 	CONSTRAINT visitorsi94_pkey PRIMARY KEY (visitorid)
 );

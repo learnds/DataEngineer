@@ -2,8 +2,9 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators import (StageToRedshiftOperator, LoadFactOperator,
-                                LoadDimensionOperator, DataQualityOperator)
+from operators import (StageToRedshiftOperator, LoadFactOperator,
+                               LoadDimensionOperator, DataQualityOperator,
+                               IntegrityCheckOperator)
 from helpers import SqlQueries
 
 # AWS_KEY = os.environ.get('AWS_KEY')
@@ -96,20 +97,20 @@ load_dates_dim = LoadDimensionOperator(
     truncate_flag='Y'
 )
 
-run_quality_check1 = DataQualityOperator(
-    task_id='Run_data_quality_checks-1',
+run_quality_check = DataQualityOperator(
+    task_id='Run_data_quality_checks',
     dag=dag,
     redshift_conn_id="redshift",
     check_query="select count(1) from public.i94visitors_fact where reasonforvisit is null",
     expected_count=10000
 )
 
-run_quality_check2 = DataQualityOperator(
-    task_id='Run_data_quality_checks-2',
+run_intg_check = IntegrityCheckOperator(
+    task_id='Run_data_integrity_check',
     dag=dag,
     redshift_conn_id="redshift",
-    check_query="select count(1) from public.i94visitors_fact where airportid='-1' or stateid = '-1'",
-    expected_count=10000
+    check_query="select count(airportid) from public.i94visitors_fact where airportid not in (select airportid from airports_dim)",
+    table_name="i94visitors_fact"
 )
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
@@ -123,10 +124,10 @@ load_airports_dim >> Load_visitorsi94_fact
 load_countries_dim >> Load_visitorsi94_fact
 load_states_dim >> Load_visitorsi94_fact
 load_dates_dim >> Load_visitorsi94_fact
-Load_visitorsi94_fact >> run_quality_check1
-Load_visitorsi94_fact >> run_quality_check2
-run_quality_check1 >> end_operator
-run_quality_check2 >> end_operator
+Load_visitorsi94_fact >> run_quality_check
+Load_visitorsi94_fact >> run_intg_check
+run_quality_check >> end_operator
+run_intg_check >> end_operator
 
 
 

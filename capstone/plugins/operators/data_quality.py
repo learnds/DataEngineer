@@ -27,7 +27,7 @@ class DataQualityOperator(BaseOperator):
         data_quality_check_sql = self.check_query
         rec_count = redshift.get_records(data_quality_check_sql)
         num_records = rec_count[0][0]
-        if num_records != self.expected_count:
+        if num_records > self.expected_count:
             raise ValueError(f"Data quality check failed. {rec_count[0][0]} does not match expected count {self.expected_count}")
             self.log.error(f"Data quality check failed. {rec_count[0][0]} does not match expected count {self.expected_count}")
         

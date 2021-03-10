@@ -65,7 +65,7 @@ CREATE TABLE public.i94visitors_fact (
     stateid varchar(10) not null,
     visitorcountryid varchar(10) not null,
     i94date date not null,
-    arrivalmode varchar(10) not null,
+    arrivalmode varchar(10)  null,
     reasonforvisit varchar(10)  null,
     departuredate date  null,
     visitorage float  null,

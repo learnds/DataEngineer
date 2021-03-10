@@ -39,7 +39,7 @@ stage_i94vistors = StageToRedshiftOperator(
     redshift_conn_id="redshift",
     aws_credentials_id="aws_credentials",
     s3_bucket="ctsprojbucket/",
-    s3_key="i94visitorstest/",
+    s3_key="i94visitors/",
     fileformat="parquet",
     truncate_flag='Y' 
 )
@@ -96,12 +96,20 @@ load_dates_dim = LoadDimensionOperator(
     truncate_flag='Y'
 )
 
-run_quality_checks = DataQualityOperator(
-    task_id='Run_data_quality_checks',
+run_quality_check1 = DataQualityOperator(
+    task_id='Run_data_quality_checks-1',
     dag=dag,
     redshift_conn_id="redshift",
-    check_query="select count(1) from public.i94vistors_fact where arrivaldate is null",
-    expected_count=0
+    check_query="select count(1) from public.i94visitors_fact where reasonforvisit is null",
+    expected_count=10000
+)
+
+run_quality_check2 = DataQualityOperator(
+    task_id='Run_data_quality_checks-2',
+    dag=dag,
+    redshift_conn_id="redshift",
+    check_query="select count(1) from public.i94visitors_fact where airportid='-1' or stateid = '-1'",
+    expected_count=10000
 )
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
@@ -115,8 +123,10 @@ load_airports_dim >> Load_visitorsi94_fact
 load_countries_dim >> Load_visitorsi94_fact
 load_states_dim >> Load_visitorsi94_fact
 load_dates_dim >> Load_visitorsi94_fact
-Load_visitorsi94_fact >> run_quality_checks
-run_quality_checks >> end_operator
+Load_visitorsi94_fact >> run_quality_check1
+Load_visitorsi94_fact >> run_quality_check2
+run_quality_check1 >> end_operator
+run_quality_check2 >> end_operator
 
 
 

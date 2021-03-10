@@ -27,7 +27,7 @@ CREATE TABLE public."dates_dim" (
 CREATE TABLE public.airports_dim (
 	airportid varchar(10) null,
     identifier varchar(10)  null,
-    type varchar(255) not null,
+    type varchar(255)  null,
     name varchar(2000)  null,
     continent varchar(10)  null,
 	isocountry varchar(256) null,
